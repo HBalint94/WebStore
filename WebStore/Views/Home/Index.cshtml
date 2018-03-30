@@ -1,0 +1,33 @@
+﻿@using WebStore.Models;
+
+@model IList<Category>
+@* csak a törzset adjuk meg*@
+
+@if (Model == null || !Model.Any())
+{
+    <div class="contentText">Nincs elérhető kategória</div>
+}
+else{
+
+    <table>
+        @* egy sorba 2 kategoria*@
+        @for (int i = 0; i < (Model.Count+1)/2;i++)
+        {
+             <tr>
+                 @for(int j=i * 2;j<i*2+2 && j < Model.Count; j++)
+                 {
+                     <td>
+                         <div>
+                             <strong>Kategoria neve:</strong>@Model[j].Name<br/>
+                         </div>
+                         <div>
+                             <a asp-action="Products" asp-route-categoryId="@Model[j].Id">@Model[j].Name</a>
+                         </div>
+                     </td>
+                 }
+             </tr>
+        }
+    </table>
+
+
+}

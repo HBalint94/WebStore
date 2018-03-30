@@ -1,0 +1,46 @@
+﻿@using System;
+@using System.Globalization;
+@using WebStore.Models;
+
+@model IList<Product>
+
+@if (Model == null) { 
+<div class="contentText">Jelenleg nincs elérhető kategória</div>
+}else{
+     
+    <table>
+        @*hármasával sorolom fel a termékeket*@
+        @for (int i=0;i<(Model.Count + 2) / 3; i++)
+        { 
+            <tr>
+                @for(int j=i*3; j<i*3+3 && j < Model.Count; j++)
+                {
+                    <td>
+                        <table border="0" width="300">
+                            <tr>
+                                <td>
+                                    <strong>Gyártó: </strong>@Model[j].Producer<br />
+                                    <strong>Modell szám: </strong>@Model[j].ModellNumber.ToString()<br />
+                                    <strong>Termék leírása: </strong>@Model[j].Description<br />
+                                    <strong>Ára: </strong>@Model[j].Price.ToString()<br />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.ActionLink("Kosárba", "AddToShoppingCart", "ShoppingCart",new { @Model[j].ModellNumber})
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+                }
+            </tr>
+        }
+
+
+
+
+
+    </table>
+}
