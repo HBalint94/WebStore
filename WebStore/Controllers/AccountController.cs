@@ -96,7 +96,7 @@ namespace WebStore.Controllers
                 // nameof biztonságosabb mintha simán megadnánk stringként, hogy "Index",
                 // mert így fordítási hibát kapunk, ha megváltozik az Index függvény neve,
                 // de itt elfelejtenénk átírni
-                return RedirectToAction(nameof(HomeController.Index), "Index");
+                return RedirectToAction(nameof(HomeController.Index));
             }
         }
 

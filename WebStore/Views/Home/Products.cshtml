@@ -27,7 +27,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    @Html.ActionLink("Kosárba", "AddToShoppingCart", "ShoppingCart",new { @Model[j].ModellNumber})
+                                    <a asp-controller= "ShoppingCart" asp-action="AddToShoppingCart" asp-route-modellNumber="@Model[j].ModellNumber">Kosárba</a>
                                 </td>
                             </tr>
 

@@ -25,7 +25,8 @@ namespace WebStore.Models
             ISession session = services.GetRequiredService<IHttpContextAccessor>()?
                 .HttpContext.Session;
 
-            var service = services.GetService<StoreService>();
+            var context = services.GetService<WebStoreContext>();
+            var service = new StoreService(context);
             string cartId = session.GetString("CartId") ?? Guid.NewGuid().ToString();
 
             session.SetString("CartId", cartId);
