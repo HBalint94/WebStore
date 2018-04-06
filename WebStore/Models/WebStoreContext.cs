@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WebStore.Models
 {
-    public class WebStoreContext : IdentityDbContext<ApplicationUser>
+    public class WebStoreContext : DbContext
     {
         public WebStoreContext(DbContextOptions<WebStoreContext> options)
             : base(options)
@@ -20,6 +20,7 @@ namespace WebStore.Models
     public DbSet<Rent> Rents { get; set; }
     public DbSet<RentProductConnection> RentProductConnections { get; set; }
     public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+    public DbSet<Customer> Customers { get; set; }
 
     
     }

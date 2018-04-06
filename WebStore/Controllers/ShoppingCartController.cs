@@ -11,12 +11,14 @@ namespace WebStore.Controllers
     public class ShoppingCartController : Controller
     {
         private readonly ShoppingCart shoppingCart;
-        private readonly IStoreService service;
+        private readonly IStoreService storeService;
+        
 
-        public ShoppingCartController(ShoppingCart shoppingCart, IStoreService service)
+        public ShoppingCartController(ShoppingCart shoppingCart, IStoreService storeService)          
         {
+            this.storeService = storeService;
             this.shoppingCart = shoppingCart;
-            this.service = service;
+            
         }
 
         public ViewResult Index()
@@ -33,9 +35,9 @@ namespace WebStore.Controllers
             return View(shoppingViewModel);
         }
 
-        public RedirectToActionResult AddToShoppingCart(int productModellNumber)
+        public RedirectToActionResult AddToShoppingCart(int ModellNumber)
         {
-            var selectedProduct = service.GetProduct(productModellNumber);
+            var selectedProduct = storeService.GetProduct(ModellNumber);
             if(selectedProduct != null)
             {
                 shoppingCart.AddToCart(selectedProduct, 1);
@@ -45,7 +47,7 @@ namespace WebStore.Controllers
 
         public RedirectToActionResult RemoveFromShoppingCart(int productModellNumber)
         {
-            var selectedProduct = service.GetProduct(productModellNumber);
+            var selectedProduct = storeService.GetProduct(productModellNumber);
             if (selectedProduct != null)
             {
                 shoppingCart.RemoveFromCart(selectedProduct);

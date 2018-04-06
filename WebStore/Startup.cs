@@ -29,35 +29,21 @@ namespace WebStore
             services.AddDbContext<WebStoreContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-            {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 3;
-                options.Password.RequiredUniqueChars = 0;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-
-            })
-            .AddEntityFrameworkStores<WebStoreContext>()
-            .AddDefaultTokenProviders();
-
-
+            // Dependency injections
             services.AddTransient<IStoreService,StoreService>();
+            services.AddTransient<IAccountService, AccountService>();
+            services.AddSingleton<ApplicationState>();
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped(sp => ShoppingCart.GetCart(sp));
-
+            
             services.AddMvc();
 
 
-            services.AddMemoryCache();
-
+            // Munkamenetkezelés beállítása
+            services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
-                options.Cookie.HttpOnly = true;
+                options.IdleTimeout = TimeSpan.FromMinutes(15); // max. 15 percig él a munkamenet
+                options.Cookie.HttpOnly = true; // kliens oldali szkriptek ne férjenek hozzá a sütihez 
             });
         }
 
@@ -74,10 +60,10 @@ namespace WebStore
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            // Munkamentek használata
             app.UseSession();
+            // Statikus fájlkiszolgálás használata
             app.UseStaticFiles();
-            app.UseAuthentication();
-
 
             app.UseMvc(routes =>
             {

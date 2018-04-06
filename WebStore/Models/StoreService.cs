@@ -114,7 +114,7 @@ namespace WebStore.Models
 
         public ShoppingCartItem GetShoppingCartItem(Product product, string shoppingCartId)
         {
-            throw new NotImplementedException();
+            return context.ShoppingCartItems.FirstOrDefault(s => s.Product.ModellNumber == product.ModellNumber && s.ShoppingCartId == shoppingCartId);
         }
 
         public List<ShoppingCartItem> GetShoppingCartItems(string shoppingCartId)

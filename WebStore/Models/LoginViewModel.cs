@@ -9,32 +9,47 @@ namespace WebStore.Models
 {
     public class LoginViewModel
     {
-        [DisplayName("Név")]
-        [Required]
-        public string UserName { get; set; }
+        /// <summary>
+        /// Felhasználónév.
+        /// </summary>
+        [Required(ErrorMessage = "A felhasználónév megadása kötelező.")]
+        public String UserName { get; set; }
 
-        [Required]
-        [DisplayName("Jelszó")]
+        /// <summary>
+        /// Jelszó.
+        /// </summary>
+        [Required(ErrorMessage = "A jelszó megadása kötelező.")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public String Password { get; set; }
+
     }
 
-    public class RegisterViewModel
+    /// <summary>
+    /// Vendég regisztrációs nézetmodell.
+    /// </summary>
+    public class RegistrationViewModel : CustomerViewModel
     {
-        [Required]
-        [DisplayName("Név")]
+        /// <summary>
+        /// Felhasználónév.
+        /// </summary>
+        [Required(ErrorMessage = "A felhasználónév megadása kötelező.")]
+        [RegularExpression("^[A-Za-z0-9_-]{5,40}$", ErrorMessage = "A felhasználónév formátuma, vagy hossza nem megfelelő.")]
+        public String UserName { get; set; }
 
-        public string UserName { get; set; }
-
-        [Required]
+        /// <summary>
+        /// Jelszó.
+        /// </summary>
+        [Required(ErrorMessage = "A jelszó megadása kötelező.")]
+        [RegularExpression("^[A-Za-z0-9_-]{5,40}$", ErrorMessage = "A jelszó formátuma, vagy hossza nem megfelelő.")]
         [DataType(DataType.Password)]
-        [DisplayName("Jelszó")]
-        public string Password { get; set; }
+        public String Password { get; set; }
 
-        [Required]
+        /// <summary>
+        /// Jelszó ismételt megadása.
+        /// </summary>
+        [Required(ErrorMessage = "A jelszó ismételt megadása kötelező.")]
+        [Compare(nameof(Password), ErrorMessage = "A két jelszó nem egyezik.")]
         [DataType(DataType.Password)]
-        [Compare("Password")]
-        [DisplayName("Jelszó újra")]
-        public string PasswordRepeat { get; set; }
+        public String UserConfirmPassword { get; set; }
     }
 }

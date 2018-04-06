@@ -6,100 +6,101 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using System;
+using Microsoft.AspNetCore.Http;
 
 namespace WebStore.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(IAccountService accountService, IStoreService storeService)
+           : base(accountService, storeService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
         }
 
+        public IActionResult Index()
+        {
+            return RedirectToAction("Login");
+        }
+
+        /// <summary>
+        /// Bejelentkezés.
+        /// </summary>
         [HttpGet]
-        public async Task<IActionResult> Login(string returnUrl = null)
+        public IActionResult Login()
         {
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-            ViewBag.ReturnUrl = returnUrl;
-
-            return View();
+            return View("Login");
         }
+
+        /// <summary>
+        /// Bejelentkezés.
+        /// </summary>
+        /// <param name="user">A bejelentkezés adatai.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        public IActionResult Login(LoginViewModel user)
         {
-            ViewBag.ReturnUrl = returnUrl;
-            if (ModelState.IsValid)
-            {
-                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    return RedirectToLocal(returnUrl);
-                }
+            if (!ModelState.IsValid)
+                return View("Login", user);
 
-                ModelState.AddModelError("", "Bejelentkezés sikertelen!");
-                return View(model);
+            // bejelentkeztetjük a felhasználót
+            if (!accountService.Login(user))
+            {
+                // nem szeretnénk, ha a felhasználó tudná, hogy a felhasználónévvel, vagy a jelszóval van-e baj, így csak általános hibát jelzünk
+                ModelState.AddModelError("", "Hibás felhasználónév, vagy jelszó.");
+                return View("Login", user);
             }
 
-            return View(model);
+            // ha sikeres volt az ellenőrzés
+            HttpContext.Session.SetString("user", user.UserName); // felvesszük a felhasználó nevét a munkamenetbe
+            HttpContext.Session.Set("shoppingCart", new ShoppingCart(storeService)); // felvesszünk egy új kosarat
+            return RedirectToAction("Index", "Home"); // átirányítjuk a főoldalra
         }
 
-
+        /// <summary>
+        /// Regisztráció.
+        /// </summary>
         [HttpGet]
-        public IActionResult Register(string returnUrl = null)
+        public IActionResult Register()
         {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
+            return View("Register");
         }
 
+        /// <summary>
+        /// Regisztráció.
+        /// </summary>
+        /// <param name="customer">Regisztrációs adatok.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        public IActionResult Register(RegistrationViewModel customer)
         {
-            ViewBag.ReturnUrl = returnUrl;
-            if (ModelState.IsValid)
+            // végrehajtjuk az ellenőrzéseket
+            if (!ModelState.IsValid)
+                return View("Register", customer);
+
+            if (!accountService.Register(customer))
             {
-                var user = new ApplicationUser { UserName = model.UserName };
-                var result = await _userManager.CreateAsync(user, model.Password);
-
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToLocal(returnUrl);
-                }
-
-                ModelState.AddModelError("", "Sikertelen regisztráció");
+                ModelState.AddModelError("UserName", "A megadott felhasználónév már létezik.");
+                return View("Register", customer);
             }
 
-            return View(model);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index","Home");
+            ViewBag.Information = "A regisztráció sikeres volt. Kérjük, jelentkezzen be.";
+
+            if (HttpContext.Session.GetString("user") != null) // ha be volt jelentkezve egy felhasználó, akkor kijelentkeztetjük
+                HttpContext.Session.Remove("user");
+
+            return RedirectToAction("Login");
         }
 
-        private IActionResult RedirectToLocal(string returnUrl)
+        /// <summary>
+        /// Kijelentkezés.
+        /// </summary>
+        public IActionResult Logout()
         {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                // nameof biztonságosabb mintha simán megadnánk stringként, hogy "Index",
-                // mert így fordítási hibát kapunk, ha megváltozik az Index függvény neve,
-                // de itt elfelejtenénk átírni
-                return RedirectToAction(nameof(HomeController.Index));
-            }
+            accountService.Logout();
+
+            return RedirectToAction("Index", "Home"); // átirányítjuk a főoldalra
         }
 
-            
+
     }
 }

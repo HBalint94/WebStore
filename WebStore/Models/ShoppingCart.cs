@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -11,30 +12,16 @@ namespace WebStore.Models
     {
         private readonly IStoreService service;
 
-        public ShoppingCart(IStoreService service)
-        {
-            this.service = service;
-        }
-
         public string ShoppingCartId { get; set; }
 
         public List<ShoppingCartItem> ShoppingCartItems { get; set; }
 
-        public static ShoppingCart GetCart(IServiceProvider services)
+        public ShoppingCart(IStoreService service)
         {
-            ISession session = services.GetRequiredService<IHttpContextAccessor>()?
-                .HttpContext.Session;
-
-            var context = services.GetService<WebStoreContext>();
-            var service = new StoreService(context);
-            string cartId = session.GetString("CartId") ?? Guid.NewGuid().ToString();
-
-            session.SetString("CartId", cartId);
-
-            return new ShoppingCart(service) { ShoppingCartId = cartId };
-
+            this.service = service;
+            ShoppingCartItems = new List<ShoppingCartItem>();
         }
-
+        
         public void AddToCart(Product product,int quantity)
         {
             var shoppingCartItem = service.GetShoppingCartItem(product, ShoppingCartId);

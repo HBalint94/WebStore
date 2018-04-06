@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebStore.Models;
 
 namespace WebStore.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly IStoreService storeService;
+       //private readonly IStoreService storeService;
 
-        public HomeController(IStoreService storeService)
-        {
-            this.storeService = storeService;
-        }
+        public HomeController(IAccountService accountService, IStoreService storeService)
+            :base(accountService,storeService)
+        { }
+        
+        
 
-        [AllowAnonymous]
+        // kezdő oldal
         public IActionResult Index()
         {
             return View("Index",storeService.Categories.ToList());
