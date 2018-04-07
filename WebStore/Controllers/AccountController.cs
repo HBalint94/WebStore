@@ -52,7 +52,7 @@ namespace WebStore.Controllers
 
             // ha sikeres volt az ellenőrzés
             HttpContext.Session.SetString("user", user.UserName); // felvesszük a felhasználó nevét a munkamenetbe
-            HttpContext.Session.Set("shoppingCart", new ShoppingCart(storeService)); // felvesszünk egy új kosarat
+            SessionExtensions.Set<ShoppingCart>(HttpContext.Session,"shoppingCart", new ShoppingCart(storeService,user.UserName)); // felveszünk egy új kosarat
             return RedirectToAction("Index", "Home"); // átirányítjuk a főoldalra
         }
 

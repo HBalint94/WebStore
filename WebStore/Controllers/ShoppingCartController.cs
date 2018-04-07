@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Session;
 using System;
 using System.Collections.Generic;
@@ -12,13 +13,14 @@ namespace WebStore.Controllers
     {
         private readonly ShoppingCart shoppingCart;
         private readonly IStoreService storeService;
-        
 
-        public ShoppingCartController(ShoppingCart shoppingCart, IStoreService storeService)          
+
+        public ShoppingCartController(IStoreService storeService)          
         {
             this.storeService = storeService;
-            this.shoppingCart = shoppingCart;
-            
+            ISession session = HttpContext.Session;
+            this.shoppingCart = SessionExtensions.Get<ShoppingCart>(session,"shoppingCart"); // felveszünk egy új kosarat
+
         }
 
         public ViewResult Index()

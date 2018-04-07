@@ -14,10 +14,13 @@ namespace WebStore.Models
 
         public string ShoppingCartId { get; set; }
 
+        public string ShoppingCartUserName { get; set; }
+
         public List<ShoppingCartItem> ShoppingCartItems { get; set; }
 
-        public ShoppingCart(IStoreService service)
+        public ShoppingCart(IStoreService service, string userName)
         {
+            this.ShoppingCartUserName = userName;
             this.service = service;
             ShoppingCartItems = new List<ShoppingCartItem>();
         }
