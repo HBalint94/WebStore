@@ -19,7 +19,6 @@ namespace WebStore.Models
     public DbSet<Administrator> Administrators { get; set; }
     public DbSet<Rent> Rents { get; set; }
     public DbSet<RentProductConnection> RentProductConnections { get; set; }
-    public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
     public DbSet<Customer> Customers { get; set; }
 
     

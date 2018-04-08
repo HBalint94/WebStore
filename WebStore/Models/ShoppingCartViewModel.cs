@@ -8,7 +8,7 @@ namespace WebStore.Models
     public class ShoppingCartViewModel
     {
 
-        public ShoppingCart ShoppingCart { get; set; }
+        public List<ShoppingCartItem> ShoppingCartItems { get; set; }
 
         public int ShoppingCartTotal { get; set; }
 

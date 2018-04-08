@@ -9,40 +9,34 @@ using WebStore.Models;
 
 namespace WebStore.Controllers
 {
-    public class ShoppingCartController : Controller
+    public class ShoppingCartController : BaseController
     {
-        private readonly ShoppingCart shoppingCart;
-        private readonly IStoreService storeService;
+        private readonly ShoppingCartService shoppingCartService;
 
-
-        public ShoppingCartController(IStoreService storeService)          
+        public ShoppingCartController(IAccountService accountService,IStoreService storeService,ShoppingCartService service)
+            :base(accountService,storeService)
         {
-            this.storeService = storeService;
-            ISession session = HttpContext.Session;
-            this.shoppingCart = SessionExtensions.Get<ShoppingCart>(session,"shoppingCart"); // felveszünk egy új kosarat
-
+            this.shoppingCartService = service;
         }
 
         public ViewResult Index()
         {
-            var items = shoppingCart.GetShoppingCartItems();
-            shoppingCart.ShoppingCartItems = items;
-
+ 
             var shoppingViewModel = new ShoppingCartViewModel
             {
-                ShoppingCart = shoppingCart,
-                ShoppingCartTotal = shoppingCart.GetShoppingCarTotal()
+                ShoppingCartItems = shoppingCartService.GetShoppingCartItems(),
+                ShoppingCartTotal = shoppingCartService.GetShoppingCartTotal()
             };
 
             return View(shoppingViewModel);
         }
 
-        public RedirectToActionResult AddToShoppingCart(int ModellNumber)
+        public RedirectToActionResult AddToShoppingCart(int productModellNumber)
         {
-            var selectedProduct = storeService.GetProduct(ModellNumber);
+            var selectedProduct = storeService.GetProduct(productModellNumber);
             if(selectedProduct != null)
             {
-                shoppingCart.AddToCart(selectedProduct, 1);
+                shoppingCartService.AddShoppingCartItem(productModellNumber);
             }
             return RedirectToAction("Index");
         }
@@ -52,9 +46,8 @@ namespace WebStore.Controllers
             var selectedProduct = storeService.GetProduct(productModellNumber);
             if (selectedProduct != null)
             {
-                shoppingCart.RemoveFromCart(selectedProduct);
+                shoppingCartService.RemoveShoppingCartItem(productModellNumber);
             }
-
             return RedirectToAction("Index");
         }
     }

@@ -33,7 +33,7 @@ namespace WebStore
             services.AddTransient<IStoreService,StoreService>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddSingleton<ApplicationState>();
-            services.AddTransient<ShoppingCart>();
+            services.AddTransient<ShoppingCartService>();
 
             
             services.AddMvc();

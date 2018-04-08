@@ -15,7 +15,6 @@ namespace WebStore.Models
 
         IEnumerable<RentProductConnection> RentProductConnection { get; }
 
-        IEnumerable<ShoppingCartItem> ShoppingCartItems { get; }
         // megadja, hogy egy adott rendeléshez egy adott modellből mennyi tartozik
         int GetRentedProductCountInARent(int prodModellNumber, int rentId);
 
@@ -33,18 +32,6 @@ namespace WebStore.Models
         int GetPriceOfRent(int rentId);
 
         IEnumerable<Product> GetProductsBasedOnCategoryId(int categoryId);
-
-        void AddShoppingCartItem(ShoppingCartItem shoppingCartItem);
-
-        void RemoveShoppingCartItem(ShoppingCartItem shoppingCartItem);
-
-        ShoppingCartItem GetShoppingCartItem(Product product, string shoppingCartId);
-
-        List<ShoppingCartItem> GetShoppingCartItems(string shoppingCartId);
-
-        void ClearCart(string shoppingCartId);
-
-        int GetShoppingCartTotal(string shoppingCartId);
 
         void SaveChanges();
        

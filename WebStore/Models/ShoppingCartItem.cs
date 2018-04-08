@@ -8,12 +8,15 @@ namespace WebStore.Models
 {
     public class ShoppingCartItem
     {
-        public int ShoppingCartItemId { get; set; }
+        public ShoppingCartItem() { }
 
-        public Product Product { get; set; }
+        public ShoppingCartItem(int pmn,int q)
+        {
+            this.ProductModellNumber = pmn;
+            this.Quantity = q;
+        }
+        public int ProductModellNumber{ get; set; }
         
         public int Quantity { get; set; }
-
-        public string ShoppingCartId { get; set; }
     }
 }

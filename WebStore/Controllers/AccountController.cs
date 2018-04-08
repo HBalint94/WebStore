@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using System;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace WebStore.Controllers
 {
@@ -52,7 +53,7 @@ namespace WebStore.Controllers
 
             // ha sikeres volt az ellenőrzés
             HttpContext.Session.SetString("user", user.UserName); // felvesszük a felhasználó nevét a munkamenetbe
-            SessionExtensions.Set<ShoppingCart>(HttpContext.Session,"shoppingCart", new ShoppingCart(storeService,user.UserName)); // felveszünk egy új kosarat
+            SessionExtensions.Set<List<ShoppingCartItem>>(HttpContext.Session,"shoppingCart", new List<ShoppingCartItem>()); // felveszünk egy új kosarat
             return RedirectToAction("Index", "Home"); // átirányítjuk a főoldalra
         }
 

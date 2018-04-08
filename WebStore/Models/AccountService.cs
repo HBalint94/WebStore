@@ -31,9 +31,9 @@ namespace WebStore.Models
 
         public string CurrentUserName => httpContext.Session.GetString("user");
 
-        public ShoppingCart CurrentShoppingCart
+        public List<ShoppingCartItem> CurrentShoppingCart
         {
-            get =>SessionExtensions.Get<ShoppingCart>(httpContext.Session,"shoppingCart");
+            get =>SessionExtensions.Get<List<ShoppingCartItem>>(httpContext.Session,"shoppingCart");
         }
         public bool Create(CustomerViewModel customer, out string userName)
         {
@@ -104,7 +104,6 @@ namespace WebStore.Models
             // ha sikeres volt az ellenőrzés
             httpContext.Session.SetString("user", user.UserName); // felvesszük a felhasználó nevét a munkamenetbe
             ISession session = httpContext.Session;
-            SessionExtensions.Set<ShoppingCart>(session,"shoppingCart", customer.ShoppingCart);// felvesszük a felhasználó kosarát a munkamenetbe
 
             UserCount++;
             return true;

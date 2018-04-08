@@ -16,7 +16,6 @@ namespace WebStore.Models
             this.context = context;
         }
 
-
         public IEnumerable<Category> Categories => context.Categories;
 
         public IEnumerable<Product> Products => context.Products;
@@ -24,8 +23,6 @@ namespace WebStore.Models
         public IEnumerable<Rent> Rents => context.Rents;
 
         public IEnumerable<RentProductConnection> RentProductConnection => context.RentProductConnections;
-
-        public IEnumerable<ShoppingCartItem> ShoppingCartItems => context.ShoppingCartItems;
 
         public int GetRentedProductCountInARent(int prodModellNumber, int rentId)
         {
@@ -91,52 +88,10 @@ namespace WebStore.Models
             return context.Products.Where(product => product.CategoryId == categoryId);
         }
 
-        public void AddShoppingCartItem(ShoppingCartItem shoppingCartItem)
-        {
-            context.ShoppingCartItems.Add(shoppingCartItem);
-        }
-
-        public ShoppingCartItem GetShoppingCartITem(Product product, string shoppingCartId)
-        {
-           return context.ShoppingCartItems.SingleOrDefault(
-                s => s.Product.ModellNumber == product.ModellNumber && s.ShoppingCartId == shoppingCartId);
-        }
-
         void IStoreService.SaveChanges()
         {
             context.SaveChanges();
         }
 
-        public void RemoveShoppingCartItem(ShoppingCartItem shoppingCartItem)
-        {
-            context.ShoppingCartItems.Remove(shoppingCartItem);
-        }
-
-        public ShoppingCartItem GetShoppingCartItem(Product product, string shoppingCartId)
-        {
-            return context.ShoppingCartItems.FirstOrDefault(s => s.Product.ModellNumber == product.ModellNumber && s.ShoppingCartId == shoppingCartId);
-        }
-
-        public List<ShoppingCartItem> GetShoppingCartItems(string shoppingCartId)
-        {
-            return context.ShoppingCartItems.Where(s => s.ShoppingCartId == shoppingCartId)
-                .Include(s => s.Product)
-                .ToList();
-        }
-
-        public void ClearCart(string shoppingCartId)
-        {
-            var cartItems = context.ShoppingCartItems.Where(cart => cart.ShoppingCartId == shoppingCartId);
-            context.ShoppingCartItems.RemoveRange(cartItems);
-
-        }
-
-        public int GetShoppingCartTotal(string shoppingCartId)
-        {
-            int total = context.ShoppingCartItems.Where(c => c.ShoppingCartId == shoppingCartId)
-                .Select(c => c.Product.Price * c.Quantity).Sum();
-
-            return total;
-        }
     }
 }
